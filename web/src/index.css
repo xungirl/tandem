@@ -1,0 +1,143 @@
+@import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
+
+@theme {
+  --color-paper: #fff8ef;
+  --color-paper-2: #fbeedd;
+  --color-ink: #1f1a17;
+  --color-ink-soft: #5c524b;
+  --color-coral: #ff6b4a;
+  --color-coral-soft: #ffd9cf;
+  --color-teal: #1fa59a;
+  --color-teal-soft: #c9efe9;
+  --color-sun: #ffc94a;
+  --color-sun-soft: #fff0c4;
+  --color-lilac: #b9a6ff;
+  --color-lilac-soft: #ebe4ff;
+
+  --font-display: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Figtree", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  --shadow-sticker: 3px 3px 0 0 #1f1a17;
+  --shadow-sticker-lg: 5px 5px 0 0 #1f1a17;
+
+  --animate-pop: pop 0.35s cubic-bezier(0.2, 1.4, 0.4, 1) both;
+  --animate-rise: rise 0.45s cubic-bezier(0.2, 0.9, 0.3, 1) both;
+  --animate-wiggle: wiggle 0.6s ease-in-out;
+}
+
+@keyframes pop {
+  from { transform: scale(0.85); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+@keyframes rise {
+  from { transform: translateY(14px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0); }
+  25% { transform: rotate(-6deg); }
+  75% { transform: rotate(6deg); }
+}
+@keyframes shimmer {
+  from { background-position: -200px 0; }
+  to { background-position: 200px 0; }
+}
+@keyframes orbit {
+  from { transform: rotate(0deg) translateX(var(--r)) rotate(0deg); }
+  to { transform: rotate(360deg) translateX(var(--r)) rotate(-360deg); }
+}
+@keyframes ring-fill {
+  from { stroke-dashoffset: var(--circ); }
+}
+@keyframes bar-fill {
+  from { transform: scaleX(0); }
+}
+
+html, body, #root { min-height: 100%; }
+body {
+  background: var(--color-paper-2);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* App frame: phone-width column centred on desktop */
+.app-frame {
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100dvh;
+  background: var(--color-paper);
+  position: relative;
+  box-shadow: 0 0 0 2px var(--color-ink);
+}
+
+.sticker {
+  border: 2px solid var(--color-ink);
+  box-shadow: var(--shadow-sticker);
+  border-radius: 1.1rem;
+  background: white;
+}
+.sticker-press { transition: transform 0.12s, box-shadow 0.12s; }
+.sticker-press:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 0 var(--color-ink);
+}
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+  font-weight: 700; border: 2px solid var(--color-ink); border-radius: 999px;
+  padding: 0.7rem 1.25rem; box-shadow: var(--shadow-sticker);
+  transition: transform 0.12s, box-shadow 0.12s, background 0.15s;
+}
+.btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 0 var(--color-ink); }
+.btn:disabled { opacity: 0.5; pointer-events: none; }
+.btn-primary { background: var(--color-coral); color: var(--color-ink); }
+.btn-dark { background: var(--color-ink); color: var(--color-paper); }
+.btn-ghost { background: white; }
+.btn-sm { padding: 0.4rem 0.85rem; font-size: 0.875rem; }
+
+.input {
+  width: 100%; border: 2px solid var(--color-ink); border-radius: 0.9rem;
+  background: white; padding: 0.7rem 0.9rem; font-size: 1rem; outline: none;
+}
+.input:focus { box-shadow: 0 0 0 3px var(--color-sun); }
+
+:focus-visible { outline: 3px solid var(--color-teal); outline-offset: 2px; }
+
+.skeleton {
+  background: linear-gradient(90deg, #f1e4d3 0, #fbf3e8 80px, #f1e4d3 160px);
+  background-size: 400px 100%;
+  animation: shimmer 1.2s linear infinite;
+  border-radius: 0.8rem;
+}
+
+/* Ticket stub perforation */
+.perforated { position: relative; }
+.perforated::before, .perforated::after {
+  content: ""; position: absolute; left: -9px; width: 16px; height: 16px; border-radius: 50%;
+  background: var(--color-paper); border: 2px solid var(--color-ink);
+}
+.perforated::before { top: -9px; clip-path: inset(50% 0 0 0); }
+.perforated::after { bottom: -9px; clip-path: inset(0 0 50% 0); }
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { scrollbar-width: none; }
+
+.leaflet-container { font-family: var(--font-sans); background: #f3ebe0; }
+.tandem-pin {
+  display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50% 50% 50% 4px;
+  transform: rotate(-45deg); border: 2px solid var(--color-ink); box-shadow: 2px 2px 0 var(--color-ink);
+}
+.tandem-pin > span { transform: rotate(45deg); font-size: 18px; line-height: 1; }
+.tandem-pin.is-mine { outline: 3px solid var(--color-sun); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}
+
+/* Warm the OSM tiles toward the paper palette */
+.leaflet-tile-pane { filter: saturate(0.75) sepia(0.15) brightness(1.03); }
+.leaflet-control-attribution { font-size: 9px; background: rgb(255 248 239 / 0.85) !important; }
